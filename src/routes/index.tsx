@@ -33,6 +33,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ApiKeyManagementPanel } from "@/components/api-key-management-panel";
+import { CLAUDE_TRY_DEEPLINK } from "@/lib/links";
 import mcpLogo from "@/assets/mcp-logo.png";
 import mudrexLogo from "@/assets/mudrex-logo.png";
 import mudrexIcon from "@/assets/mudrex-icon.png";
@@ -485,7 +486,7 @@ function Index() {
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a
-                  href="#setup"
+                  href={CLAUDE_TRY_DEEPLINK}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] hover:scale-[0.99]"
                 >
                   <img
