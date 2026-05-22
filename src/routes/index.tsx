@@ -166,7 +166,7 @@ function Index() {
               Documentation
             </p>
             <h2 className="mt-1 text-lg font-bold text-foreground">Mudrex MCP</h2>
-            <p className="text-sm text-muted-foreground">Version 1.0</p>
+            <p className="text-sm text-muted-foreground">Documentation</p>
           </div>
 
           <nav className="flex flex-col gap-0.5">
@@ -217,15 +217,6 @@ function Index() {
           <section id="intro" className="scroll-mt-24">
             <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
               <div>
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inset-0 animate-ping rounded-full bg-success/60" />
-                    <span className="relative h-2 w-2 rounded-full bg-success" />
-                  </span>
-                  <span className="text-xs font-semibold tracking-wide text-muted-foreground">
-                    v1.0 · LIVE
-                  </span>
-                </div>
                 <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
                   Introducing Mudrex MCP:
                   <br />
@@ -259,15 +250,18 @@ function Index() {
                 <div className="relative rounded-3xl border border-border bg-card p-8 shadow-[0_8px_40px_rgba(52,11,105,0.06)]">
                   <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                     <span>// model-context-protocol</span>
-                    <span className="rounded bg-brand-softer px-2 py-0.5 text-primary">mcp</span>
+                    <span className="inline-flex items-center gap-1.5 rounded bg-brand-softer px-2 py-0.5 text-primary">
+                      <img src={mcpMark} alt="" width={14} height={14} className="h-3.5 w-3.5 object-contain" />
+                      mcp
+                    </span>
                   </div>
-                  <div className="my-6 grid place-items-center">
+                  <div className="my-8 grid place-items-center">
                     <img
                       src={mcpMark}
                       alt="Mudrex MCP mark"
-                      width={768}
-                      height={768}
-                      className="h-48 w-48 object-contain"
+                      width={128}
+                      height={128}
+                      className="h-24 w-24 object-contain"
                     />
                   </div>
                   <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-surface-subtle text-center">
