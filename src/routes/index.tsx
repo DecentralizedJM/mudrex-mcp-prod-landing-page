@@ -259,15 +259,18 @@ function Index() {
                 <div className="relative rounded-3xl border border-border bg-card p-8 shadow-[0_8px_40px_rgba(52,11,105,0.06)]">
                   <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                     <span>// model-context-protocol</span>
-                    <span className="rounded bg-brand-softer px-2 py-0.5 text-primary">mcp</span>
+                    <span className="inline-flex items-center gap-1.5 rounded bg-brand-softer px-2 py-0.5 text-primary">
+                      <img src={mcpMark} alt="" width={14} height={14} className="h-3.5 w-3.5 object-contain" />
+                      mcp
+                    </span>
                   </div>
-                  <div className="my-6 grid place-items-center">
+                  <div className="my-8 grid place-items-center">
                     <img
                       src={mcpMark}
                       alt="Mudrex MCP mark"
-                      width={768}
-                      height={768}
-                      className="h-48 w-48 object-contain"
+                      width={128}
+                      height={128}
+                      className="h-24 w-24 object-contain"
                     />
                   </div>
                   <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-surface-subtle text-center">
