@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import mcpMark from "@/assets/mcp-mark.png";
 import apiKeyPanel from "@/assets/api-key-panel.jpg";
+import mudrexLogo from "@/assets/mudrex-logo.png";
+import claudeLogo from "@/assets/claude-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -92,16 +94,13 @@ const CONFIG_JSON = `{
 
 function MudrexWordmark() {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="grid h-8 w-8 place-items-center rounded-lg brand-gradient-bg shadow-sm">
-        <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 18V6l8 8 8-8v12" />
-        </svg>
-      </div>
-      <span className="text-[18px] font-bold tracking-tight text-foreground">
-        Mudrex
-      </span>
-    </div>
+    <img
+      src={mudrexLogo}
+      alt="Mudrex"
+      width={120}
+      height={28}
+      className="h-7 w-auto object-contain"
+    />
   );
 }
 
@@ -215,68 +214,44 @@ function Index() {
         <main className="min-w-0 flex-1 py-14 md:py-20">
           {/* Hero */}
           <section id="intro" className="scroll-mt-24">
-            <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
-              <div>
-                <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
-                  Introducing Mudrex MCP:
-                  <br />
-                  <span className="brand-gradient-text">Trade Crypto with AI.</span>
-                </h1>
-                <p className="mt-6 max-w-xl text-[17px] leading-7 text-muted-foreground">
-                  Connect Mudrex's trading engine directly to your AI models.
-                  The Model Context Protocol enables seamless execution,
-                  portfolio monitoring, and data retrieval — straight from
-                  Claude Desktop.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <a
-                    href="#setup"
-                    className="inline-flex items-center gap-2 rounded-lg brand-gradient-bg px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[0.98]"
-                  >
-                    Get Started
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="#usecases"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:text-primary"
-                  >
-                    Explore Use Cases
-                  </a>
-                </div>
+            <div className="max-w-3xl">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5">
+                <img
+                  src={mcpMark}
+                  alt="Model Context Protocol"
+                  width={18}
+                  height={18}
+                  className="h-4 w-4 object-contain"
+                />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Model Context Protocol
+                </span>
               </div>
-
-              <div className="relative mx-auto w-full max-w-md">
-                <div className="absolute -inset-6 rounded-3xl brand-gradient-bg opacity-[0.08] blur-2xl" />
-                <div className="relative rounded-3xl border border-border bg-card p-8 shadow-[0_8px_40px_rgba(52,11,105,0.06)]">
-                  <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-                    <span>// model-context-protocol</span>
-                    <span className="inline-flex items-center gap-1.5 rounded bg-brand-softer px-2 py-0.5 text-primary">
-                      <img src={mcpMark} alt="" width={14} height={14} className="h-3.5 w-3.5 object-contain" />
-                      mcp
-                    </span>
-                  </div>
-                  <div className="my-8 grid place-items-center">
-                    <img
-                      src={mcpMark}
-                      alt="Mudrex MCP mark"
-                      width={128}
-                      height={128}
-                      className="h-24 w-24 object-contain"
-                    />
-                  </div>
-                  <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-surface-subtle text-center">
-                    {[
-                      { k: "Tools", v: "12+" },
-                      { k: "Latency", v: "<80ms" },
-                      { k: "Markets", v: "350+" },
-                    ].map((s) => (
-                      <div key={s.k} className="px-3 py-3">
-                        <div className="text-base font-bold text-foreground">{s.v}</div>
-                        <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{s.k}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
+                Introducing Mudrex MCP:
+                <br />
+                <span className="brand-gradient-text">Trade Crypto with AI.</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-[17px] leading-7 text-muted-foreground">
+                Connect Mudrex's trading engine directly to your AI models.
+                The Model Context Protocol enables seamless execution,
+                portfolio monitoring, and data retrieval — straight from
+                Claude Desktop.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a
+                  href="#setup"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] hover:scale-[0.99]"
+                >
+                  <img src={claudeLogo} alt="" width={20} height={20} className="h-5 w-5 rounded-[5px] object-contain" />
+                  Open in Claude
+                </a>
+                <a
+                  href="#usecases"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                >
+                  Explore Use Cases
+                </a>
               </div>
             </div>
           </section>
