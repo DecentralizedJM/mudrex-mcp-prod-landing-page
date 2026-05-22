@@ -166,7 +166,7 @@ function Index() {
               Documentation
             </p>
             <h2 className="mt-1 text-lg font-bold text-foreground">Mudrex MCP</h2>
-            <p className="text-sm text-muted-foreground">Version 1.0</p>
+            <p className="text-sm text-muted-foreground">Documentation</p>
           </div>
 
           <nav className="flex flex-col gap-0.5">
@@ -217,15 +217,6 @@ function Index() {
           <section id="intro" className="scroll-mt-24">
             <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
               <div>
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inset-0 animate-ping rounded-full bg-success/60" />
-                    <span className="relative h-2 w-2 rounded-full bg-success" />
-                  </span>
-                  <span className="text-xs font-semibold tracking-wide text-muted-foreground">
-                    v1.0 · LIVE
-                  </span>
-                </div>
                 <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
                   Introducing Mudrex MCP:
                   <br />
