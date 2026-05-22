@@ -169,12 +169,18 @@
     font-feature-settings: "cv11", "ss01";
   }
 
-  code, pre {
+  code,
+  pre {
     font-family: var(--font-mono);
   }
 
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: color-mix(in oklab, var(--foreground) 15%, transparent);
     border-radius: 9999px;
@@ -189,5 +195,56 @@
 
   .brand-gradient-bg {
     background: linear-gradient(135deg, oklch(0.32 0.16 295) 0%, oklch(0.45 0.2 285) 100%);
+  }
+
+  .api-key-grad-text {
+    background: linear-gradient(91.18deg, #6424c5 0%, #1a52bd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .flow-line {
+    fill: none;
+    stroke: color-mix(in oklab, var(--primary) 30%, transparent);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 5;
+  }
+
+  .flow-arrowhead {
+    fill: color-mix(in oklab, var(--primary) 30%, transparent);
+  }
+
+  .flow-line-forward {
+    animation: flowForward 1.2s linear infinite;
+  }
+
+  .flow-line-backward {
+    animation: flowBackward 1.2s linear infinite;
+  }
+
+  @keyframes flowForward {
+    from {
+      stroke-dashoffset: 20;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes flowBackward {
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: 20;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-line-forward,
+    .flow-line-backward {
+      animation: none;
+    }
   }
 }

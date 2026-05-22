@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import {
-  Info,
   KeyRound,
   Settings,
   Lightbulb,
@@ -14,10 +13,29 @@ import {
   ShoppingCart,
   LineChart,
   ArrowUpRight,
+  Workflow,
+  MessageCircleQuestion,
+  Rocket,
+  Plug,
+  Shield,
+  Globe,
+  Search,
+  CircleHelp,
+  ChevronDown,
+  Sparkles,
+  CircleOff,
+  type LucideIcon,
 } from "lucide-react";
-import mcpMark from "@/assets/mcp-mark.png";
-import apiKeyPanel from "@/assets/api-key-panel.jpg";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { ApiKeyManagementPanel } from "@/components/api-key-management-panel";
+import mcpLogo from "@/assets/mcp-logo.png";
 import mudrexLogo from "@/assets/mudrex-logo.png";
+import mudrexIcon from "@/assets/mudrex-icon.png";
 import claudeLogo from "@/assets/claude-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -27,13 +45,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Connect Mudrex's trading engine to Claude and other AI models via the Model Context Protocol. Execute trades, monitor portfolios, and fetch market data in natural language.",
+          "Introducing Mudrex MCP — trade crypto with AI. Connect Claude and other AI apps to your Mudrex trading engine.",
       },
       { property: "og:title", content: "Mudrex MCP — Trade Crypto with AI" },
       {
         property: "og:description",
         content:
-          "Model Context Protocol server for Mudrex. Connect Claude Desktop to your trading engine.",
+          "Introducing Mudrex MCP — trade crypto with AI. Connect Claude and other AI apps to your Mudrex trading engine.",
       },
     ],
   }),
@@ -41,42 +59,131 @@ export const Route = createFileRoute("/")({
 });
 
 const SECTIONS = [
-  { id: "intro", label: "Introduction", icon: Info },
+  { id: "intro", label: "Introduction", icon: Sparkles },
+  { id: "what-is-mcp", label: "What is MCP?", icon: "mcp" as const },
+  { id: "how-it-works", label: "How It Works", icon: Workflow },
   { id: "apikey", label: "API Key Creation", icon: KeyRound },
   { id: "setup", label: "Setting Up", icon: Settings },
   { id: "usecases", label: "Use Cases", icon: Lightbulb },
+  { id: "faq", label: "FAQ", icon: MessageCircleQuestion },
+  { id: "get-started", label: "Get Started", icon: Rocket },
+] as const;
+
+type SectionIcon = (typeof SECTIONS)[number]["icon"];
+
+function SectionNavIcon({ icon, isActive }: { icon: SectionIcon; isActive: boolean }) {
+  if (icon === "mcp") {
+    return <img src={mcpLogo} alt="" width={16} height={16} className="h-4 w-4 object-contain" />;
+  }
+
+  const Icon = icon as LucideIcon;
+  return (
+    <Icon
+      className={"h-4 w-4 " + (isActive ? "text-primary" : "")}
+      strokeWidth={isActive ? 2.5 : 2}
+    />
+  );
+}
+
+const NAV_LINKS = ["Buy Crypto", "Coin Sets", "Trade Futures", "API"] as const;
+
+const WHAT_IS_MCP_COLUMNS = [
+  {
+    icon: Plug,
+    title: "One Protocol, Every Tool",
+    body: "Instead of building a custom integration for each AI + exchange pair, MCP gives you one shared interface.",
+  },
+  {
+    icon: Globe,
+    title: "Open and Model-Agnostic",
+    body: "Works with Claude, ChatGPT, Gemini, and open-source models — any app that speaks MCP.",
+  },
+  {
+    icon: Shield,
+    title: "Secure by Design",
+    body: "Every tool call requires your approval. Your AI cannot act without permission.",
+  },
+] as const;
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    title: "Your AI App",
+    body: "Any AI-powered app — Claude Desktop, Cursor, or a custom agent — runs an MCP client.",
+  },
+  {
+    title: "The Mudrex MCP Server",
+    body: "A lightweight server that exposes trading tools: place orders, read positions, and fetch market data.",
+  },
+  {
+    title: "You Approve Each Action",
+    body: "The AI proposes a trade or query. You confirm before anything executes.",
+  },
 ] as const;
 
 const USE_CASES = [
   {
     icon: ListChecks,
     title: "View Open Positions",
-    body: "Ask Claude to summarize your active trades, PnL, and exposure across markets in one sentence.",
+    body: "Ask for PnL, exposure, and open trades across all markets in a single message.",
     tone: "brand" as const,
   },
   {
     icon: XCircle,
     title: "Close Positions",
-    body: '"Close all my BTC longs" — execute closing orders instantly through natural language.',
+    body: '"Close all my BTC longs" — natural language in, closing orders out.',
     tone: "danger" as const,
   },
   {
     icon: SlidersHorizontal,
     title: "Change Leverage",
-    body: "Adjust leverage on specific pairs without navigating complex exchange interfaces.",
+    body: "Adjust leverage on any pair without opening the exchange UI.",
     tone: "brand" as const,
   },
   {
     icon: ShoppingCart,
     title: "Execute Market Orders",
-    body: "Place buy or sell orders for any supported asset directly from your chat interface.",
+    body: "Buy or sell any supported asset directly from your chat interface.",
     tone: "brand" as const,
   },
   {
     icon: LineChart,
     title: "Fetch Market Data",
-    body: "Retrieve real-time prices, order book depth, and historical k-line data for AI analysis.",
+    body: "Pull real-time prices, order book depth, and k-line history for analysis.",
     tone: "brand" as const,
+  },
+  {
+    icon: CircleOff,
+    title: "Cancel Open Orders",
+    body: '"Cancel all my pending ETH orders" — revoke unfilled orders without opening the exchange.',
+    tone: "brand" as const,
+  },
+] as const;
+
+const FAQ_ITEMS = [
+  {
+    question: "Is Mudrex MCP only for Claude?",
+    answer:
+      "No. MCP is an open protocol used by Claude, ChatGPT, Cursor, and many other AI apps. Any client that supports MCP can connect to the Mudrex server.",
+  },
+  {
+    question: "How is this different from the Mudrex API?",
+    answer:
+      "The Mudrex API is built for app-to-app calls. MCP is built for AI-to-tool communication — it handles discovery, permissions, and context in a way REST APIs don't. The Mudrex MCP server wraps the API so your AI can use it naturally.",
+  },
+  {
+    question: "Can the AI trade without my permission?",
+    answer:
+      "No. MCP requires explicit approval before any tool runs. You control which servers your AI connects to, and every action is auditable.",
+  },
+  {
+    question: "Does the MCP server run locally or in the cloud?",
+    answer:
+      "Both. The Mudrex MCP server runs locally on your machine — your API key stays in your environment. For production workflows, you can deploy it remotely.",
+  },
+  {
+    question: "Is MCP free and open-source?",
+    answer:
+      "Yes. MCP is fully open-source under the MIT license. Mudrex MCP is free to use with your Mudrex account.",
   },
 ] as const;
 
@@ -101,6 +208,181 @@ function MudrexWordmark() {
       height={28}
       className="h-7 w-auto object-contain"
     />
+  );
+}
+
+function FlowArrows({ vertical = false }: { vertical?: boolean }) {
+  const id = useId().replace(/:/g, "");
+  const fwd = `arrowFwd-${id}`;
+  const back = `arrowBack-${id}`;
+
+  if (vertical) {
+    return (
+      <div className="flex shrink-0 justify-center py-1 sm:hidden" aria-hidden="true">
+        <svg viewBox="0 0 36 64" className="h-12 w-9">
+          <path d="M18 4 V28" className="flow-line flow-line-forward" markerEnd={`url(#${fwd})`} />
+          <path
+            d="M18 60 V36"
+            className="flow-line flow-line-backward"
+            markerEnd={`url(#${back})`}
+          />
+          <defs>
+            <marker id={fwd} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" className="flow-arrowhead" />
+            </marker>
+            <marker id={back} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" className="flow-arrowhead" />
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="hidden shrink-0 sm:flex sm:w-16 sm:flex-col sm:justify-center lg:w-20"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 64 36" className="h-9 w-full">
+        <path d="M4 10 H56" className="flow-line flow-line-forward" markerEnd={`url(#${fwd})`} />
+        <path d="M56 26 H4" className="flow-line flow-line-backward" markerEnd={`url(#${back})`} />
+        <defs>
+          <marker id={fwd} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 z" className="flow-arrowhead" />
+          </marker>
+          <marker id={back} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 z" className="flow-arrowhead" />
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+function DiagramNode({
+  logo,
+  logoAlt,
+  title,
+  subtitle,
+  logoClassName = "h-10 w-10 object-contain",
+}: {
+  logo: string;
+  logoAlt: string;
+  title: string;
+  subtitle: string;
+  logoClassName?: string;
+}) {
+  return (
+    <div className="flex flex-1 flex-col items-center">
+      <div className="flex aspect-square w-full max-w-[140px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 text-center">
+        <img src={logo} alt={logoAlt} className={logoClassName} />
+        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+function McpConnectorDiagram() {
+  return (
+    <div
+      role="img"
+      aria-label="Claude connects through MCP to Mudrex trading with bidirectional data flow"
+      className="mt-10 flex flex-col items-center sm:flex-row sm:items-center sm:justify-center"
+    >
+      <DiagramNode logo={claudeLogo} logoAlt="Claude" title="Claude" subtitle="AI" />
+      <FlowArrows vertical />
+      <FlowArrows />
+      <DiagramNode
+        logo={mcpLogo}
+        logoAlt="Model Context Protocol"
+        title="MCP"
+        subtitle="Server"
+        logoClassName="h-10 w-10 object-contain"
+      />
+      <FlowArrows vertical />
+      <FlowArrows />
+      <DiagramNode
+        logo={mudrexIcon}
+        logoAlt="Mudrex"
+        title="Mudrex"
+        subtitle="Trading Engine"
+        logoClassName="h-12 w-12 rounded-lg object-contain"
+      />
+    </div>
+  );
+}
+
+function MudrexNavbar() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
+      <div className="flex h-16 items-center justify-between gap-4 px-5 lg:px-10">
+        <a href="/" className="flex shrink-0 items-center">
+          <MudrexWordmark />
+        </a>
+
+        <nav className="hidden items-center gap-6 xl:flex">
+          {NAV_LINKS.map((label) => (
+            <a
+              key={label}
+              href="#"
+              className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+            >
+              {label}
+            </a>
+          ))}
+          <a
+            href="#"
+            className="inline-flex items-center gap-1 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            Institutional
+            <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+          </a>
+          <a
+            href="#"
+            className="inline-flex items-center gap-1 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            More
+            <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+          </a>
+        </nav>
+
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a
+            href="#"
+            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-[#2f1259] via-[#40196e] to-[#2a1148] px-4 py-2 text-sm font-semibold whitespace-nowrap text-white shadow-sm transition-opacity hover:opacity-90 sm:inline-flex"
+          >
+            <img
+              src={mudrexIcon}
+              alt=""
+              className="h-5 w-5 shrink-0 rounded-md object-contain"
+            />
+            Ask Mudrex AI
+          </a>
+          <a
+            href="#"
+            className="hidden h-9 w-9 place-items-center rounded-full border border-border bg-muted/40 text-muted-foreground transition-colors hover:text-foreground sm:grid"
+            aria-label="Search"
+          >
+            <Search className="h-4 w-4" />
+          </a>
+          <a
+            href="#"
+            className="hidden h-9 w-9 place-items-center rounded-full border border-border bg-muted/40 text-muted-foreground transition-colors hover:text-foreground sm:grid"
+            aria-label="Help"
+          >
+            <CircleHelp className="h-4 w-4" />
+          </a>
+          <a
+            href="#"
+            className="rounded-xl bg-gradient-to-r from-[#2f1259] to-[#152038] px-5 py-2.5 text-xs font-semibold whitespace-nowrap text-white transition-opacity hover:opacity-90 sm:text-sm"
+          >
+            Login / Create Account
+          </a>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -136,56 +418,32 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
-      {/* Top bar */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-5 md:px-10">
-          <a href="/" className="flex items-center">
-            <MudrexWordmark />
-          </a>
-          <nav className="hidden items-center gap-8 md:flex">
-            <a className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#">API Reference</a>
-            <a className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#">Community</a>
-            <a className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#">Support</a>
-            <a
-              href="#apikey"
-              className="inline-flex items-center gap-1.5 rounded-lg brand-gradient-bg px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[0.98]"
-            >
-              Get API Key
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          </nav>
-        </div>
-      </header>
+      <MudrexNavbar />
 
-      <div className="mx-auto flex w-full max-w-[1280px] gap-10 px-5 md:px-10">
-        {/* Sidebar */}
-        <aside className="custom-scrollbar sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 flex-col overflow-y-auto border-r border-border py-10 pr-6 md:flex">
+      <div className="flex">
+        <aside className="custom-scrollbar sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 flex-col overflow-y-auto border-r border-border px-6 py-10 md:flex">
           <div className="mb-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Documentation
             </p>
             <h2 className="mt-1 text-lg font-bold text-foreground">Mudrex MCP</h2>
-            <p className="text-sm text-muted-foreground">Documentation</p>
           </div>
 
           <nav className="flex flex-col gap-0.5">
-            {SECTIONS.map(({ id, label, icon: Icon }) => {
+            {SECTIONS.map(({ id, label, icon }) => {
               const isActive = active === id;
               return (
                 <a
                   key={id}
                   href={`#${id}`}
                   className={
-                    "group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all " +
+                    "flex items-center gap-2.5 rounded-lg py-2 pr-2 text-sm transition-colors " +
                     (isActive
-                      ? "bg-brand-soft text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground")
+                      ? "font-semibold text-primary"
+                      : "font-medium text-muted-foreground hover:text-foreground")
                   }
                 >
-                  {isActive && (
-                    <span className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-primary" />
-                  )}
-                  <Icon className={"h-4 w-4 " + (isActive ? "text-primary" : "")} strokeWidth={isActive ? 2.5 : 2} />
+                  <SectionNavIcon icon={icon} isActive={isActive} />
                   {label}
                 </a>
               );
@@ -210,71 +468,93 @@ function Index() {
           </div>
         </aside>
 
-        {/* Main */}
-        <main className="min-w-0 flex-1 py-14 md:py-20">
-          {/* Hero */}
+        <main className="min-w-0 flex-1 px-5 py-14 md:px-10 md:py-20 lg:max-w-4xl xl:max-w-5xl">
           <section id="intro" className="scroll-mt-24">
             <div className="max-w-3xl">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5">
-                <img
-                  src={mcpMark}
-                  alt="Model Context Protocol"
-                  width={18}
-                  height={18}
-                  className="h-4 w-4 object-contain"
-                />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  Model Context Protocol
-                </span>
-              </div>
               <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
-                Introducing Mudrex MCP:
+                Introducing Mudrex MCP
                 <br />
-                <span className="brand-gradient-text">Trade Crypto with AI.</span>
+                <span className="brand-gradient-text">Now Trade Crypto with AI</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-[17px] leading-7 text-muted-foreground">
-                Connect Mudrex's trading engine directly to your AI models.
-                The Model Context Protocol enables seamless execution,
-                portfolio monitoring, and data retrieval — straight from
-                Claude Desktop.
-              </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a
+                  href="#apikey"
+                  className="inline-flex items-center gap-2 rounded-lg brand-gradient-bg px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:scale-[0.99]"
+                >
+                  Get Started
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
                 <a
                   href="#setup"
                   className="inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] hover:scale-[0.99]"
                 >
-                  <img src={claudeLogo} alt="" width={20} height={20} className="h-5 w-5 rounded-[5px] object-contain" />
-                  Open in Claude
-                </a>
-                <a
-                  href="#usecases"
-                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:text-primary"
-                >
-                  Explore Use Cases
+                  <img
+                    src={claudeLogo}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 rounded-[5px] object-contain"
+                  />
+                  Try with Claude
                 </a>
               </div>
             </div>
           </section>
 
-          {/* API Key */}
+          <section id="what-is-mcp" className="mt-24 scroll-mt-24">
+            <SectionHeader iconSrc={mcpLogo} title="What is MCP?" />
+            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
+              Model Context Protocol (MCP) is an open standard that connects AI apps to your tools
+              and data — like USB-C, but for AI.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              {WHAT_IS_MCP_COLUMNS.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="rounded-2xl border border-border bg-card p-5">
+                  <div className="mb-4 grid h-9 w-9 place-items-center rounded-lg bg-brand-soft text-primary">
+                    <Icon className="h-4.5 w-4.5" strokeWidth={2.25} />
+                  </div>
+                  <h3 className="text-[15px] font-semibold text-foreground">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                </div>
+              ))}
+            </div>
+
+            <McpConnectorDiagram />
+          </section>
+
+          <section id="how-it-works" className="mt-24 scroll-mt-24">
+            <SectionHeader icon={Workflow} title="How It Works" />
+            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
+              Three parts. One flow.
+            </p>
+
+            <ol className="mt-8 grid gap-4 md:grid-cols-3">
+              {HOW_IT_WORKS_STEPS.map(({ title, body }, i) => (
+                <li
+                  key={title}
+                  className="flex flex-col rounded-2xl border border-border bg-card p-5"
+                >
+                  <span className="mb-4 grid h-7 w-7 place-items-center rounded-md bg-brand-soft text-xs font-bold text-primary">
+                    {i + 1}
+                  </span>
+                  <h3 className="text-[15px] font-semibold text-foreground">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
           <section id="apikey" className="mt-24 scroll-mt-24">
             <SectionHeader icon={KeyRound} title="API Key Creation" />
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
-              To authenticate your MCP server, you need a Mudrex API Key.
-              Generate one from your account settings under the{" "}
-              <span className="font-medium text-foreground">Developer</span>{" "}
-              section.
+              Generate a Mudrex API key to authenticate your MCP server. Head to your account
+              settings under the <span className="font-medium text-foreground">Developer</span>{" "}
+              section to create one.
             </p>
 
-            <div className="mt-6 rounded-2xl border border-border bg-surface-subtle p-2 shadow-sm">
-              <div className="overflow-hidden rounded-xl border border-border bg-card">
-                <img
-                  src={apiKeyPanel}
-                  alt="Mudrex developer dashboard showing an API Key field with Rotate and Revoke actions"
-                  loading="lazy"
-                  className="block h-auto w-full"
-                />
-              </div>
+            <div className="mt-6 w-full">
+              <ApiKeyManagementPanel />
             </div>
 
             <ol className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -296,16 +576,15 @@ function Index() {
             </ol>
           </section>
 
-          {/* Setup */}
           <section id="setup" className="mt-24 scroll-mt-24">
             <SectionHeader icon={Settings} title="Setting Up Claude Desktop" />
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
-              Configure your Claude Desktop app to use the Mudrex MCP server by
-              modifying your{" "}
+              Add the Mudrex MCP server to your AI app in about two minutes. Paste the config below
+              into your{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground">
                 claude_desktop_config.json
               </code>{" "}
-              file.
+              file, replace the API key, and restart.
             </p>
 
             <div className="mt-6 overflow-hidden rounded-2xl border border-border shadow-sm">
@@ -328,12 +607,11 @@ function Index() {
             </div>
           </section>
 
-          {/* Use Cases */}
           <section id="usecases" className="mt-24 scroll-mt-24">
             <SectionHeader icon={Lightbulb} title="What Can You Do?" />
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
-              Once connected, Claude can execute complex trading actions on
-              your behalf using natural language.
+              Run your entire trading workflow from a chat window — positions, orders, leverage, and
+              market data.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -352,28 +630,73 @@ function Index() {
                   >
                     <Icon className="h-5 w-5" strokeWidth={2.25} />
                   </div>
-                  <h3 className="text-[17px] font-semibold text-foreground">
-                    {title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {body}
-                  </p>
+                  <h3 className="text-[17px] font-semibold text-foreground">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
                   <ArrowUpRight className="absolute right-5 top-5 h-4 w-4 -translate-y-1 translate-x-1 text-muted-foreground/0 transition-all group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-primary" />
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Footer */}
+          <section id="faq" className="mt-24 scroll-mt-24">
+            <SectionHeader icon={MessageCircleQuestion} title="Frequently Asked Questions" />
+            <Accordion type="single" collapsible className="mt-4">
+              {FAQ_ITEMS.map(({ question, answer }) => (
+                <AccordionItem key={question} value={question}>
+                  <AccordionTrigger className="text-[15px] font-medium text-foreground">
+                    {question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-[15px] leading-7 text-muted-foreground">
+                    {answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+
+          <section id="get-started" className="mt-24 scroll-mt-24">
+            <div className="rounded-2xl bg-brand-softer px-8 py-10 md:px-12 md:py-14">
+              <h2 className="text-[26px] font-bold tracking-tight text-foreground md:text-[30px]">
+                Start Building with Mudrex MCP
+              </h2>
+              <p className="mt-3 max-w-xl text-[15px] leading-7 text-muted-foreground">
+                Generate your API key, add the config, and connect your AI to Mudrex in minutes.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <a
+                  href="#apikey"
+                  className="inline-flex items-center gap-2 rounded-lg brand-gradient-bg px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:scale-[0.99]"
+                >
+                  Get Started
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#setup"
+                  className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                >
+                  View setup instructions →
+                </a>
+              </div>
+            </div>
+          </section>
+
           <footer className="mt-24 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 pb-12 text-sm text-muted-foreground md:flex-row">
             <div className="font-medium text-foreground">
               © 2026 Mudrex Inc. All rights reserved.
             </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              <a className="transition-colors hover:text-primary" href="#">Privacy Policy</a>
-              <a className="transition-colors hover:text-primary" href="#">Terms of Service</a>
-              <a className="transition-colors hover:text-primary" href="#">Cookie Policy</a>
-              <a className="transition-colors hover:text-primary" href="#">Legal</a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Privacy Policy
+              </a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Terms of Service
+              </a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Cookie Policy
+              </a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Legal
+              </a>
             </div>
           </footer>
         </main>
@@ -384,15 +707,21 @@ function Index() {
 
 function SectionHeader({
   icon: Icon,
+  iconSrc,
   title,
 }: {
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  iconSrc?: string;
   title: string;
 }) {
   return (
     <div className="flex items-center gap-3 border-b border-border pb-3">
       <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-soft text-primary">
-        <Icon className="h-4.5 w-4.5" strokeWidth={2.25} />
+        {iconSrc ? (
+          <img src={iconSrc} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+        ) : (
+          Icon && <Icon className="h-4.5 w-4.5" strokeWidth={2.25} />
+        )}
       </span>
       <h2 className="text-[26px] font-bold tracking-tight text-foreground md:text-[30px]">
         {title}
@@ -400,4 +729,3 @@ function SectionHeader({
     </div>
   );
 }
-
