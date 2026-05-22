@@ -243,7 +243,7 @@ function Index() {
                   href="#setup"
                   className="inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] hover:scale-[0.99]"
                 >
-                  <img src={claudeLogo} alt="" width={18} height={18} className="h-4.5 w-4.5 rounded object-contain" />
+                  <img src={claudeLogo} alt="" width={20} height={20} className="h-5 w-5 rounded-[5px] object-contain" />
                   Open in Claude
                 </a>
                 <a
