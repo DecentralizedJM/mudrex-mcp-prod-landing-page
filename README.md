@@ -4,6 +4,8 @@ Documentation and onboarding site for **Mudrex MCP**: connect Claude and other A
 
 **Introducing Mudrex MCP — Now Trade Crypto with AI**
 
+**Live site:** [https://mudrex-mcp-prod-landing-page.mohandasjithin.workers.dev](https://mudrex-mcp-prod-landing-page.mohandasjithin.workers.dev)
+
 ## What's on the site
 
 - Product hero with setup CTAs
@@ -108,7 +110,19 @@ Decoded prompt:
 
 ## Deployment
 
-The app is configured for Cloudflare Workers (`wrangler.jsonc`). Build with `npm run build` and deploy using your Cloudflare / Wrangler workflow.
+Hosted on [Cloudflare Workers](https://developers.cloudflare.com/workers/) via Wrangler.
+
+| | |
+|---|---|
+| **Production** | [mudrex-mcp-prod-landing-page.mohandasjithin.workers.dev](https://mudrex-mcp-prod-landing-page.mohandasjithin.workers.dev) |
+| **Worker name** | `mudrex-mcp-prod-landing-page` (see `wrangler.jsonc`) |
+
+```bash
+npm run build
+npx wrangler deploy
+```
+
+To use a custom domain (e.g. `mcp.mudrex.com`), add it under **Workers & Pages → your worker → Domains** in the [Cloudflare dashboard](https://dash.cloudflare.com).
 
 ## Related links
 
