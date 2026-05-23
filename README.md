@@ -14,6 +14,7 @@ Documentation and onboarding site for **Mudrex MCP**: connect Claude and other A
 - **API Key Creation** — Figma-accurate key management UI and setup steps
 - **Setting Up** — copy-ready `claude_desktop_config.json` snippet
 - **Use cases** — positions, orders, leverage, market data, cancel orders
+- **MCP Tools** — full tool catalog (orders, positions, risk, leverage, markets)
 - **FAQ** — Claude support, API vs MCP, security, local/cloud, licensing
 
 ## Tech stack
@@ -78,23 +79,29 @@ src/
 
 ## Quick MCP config (Claude Desktop)
 
-Add this to your Claude Desktop config and replace the API key:
+Add this to your Claude Desktop config and set `API_SECRET` to your Mudrex API secret:
 
 ```json
 {
   "mcpServers": {
-    "mudrex": {
-      "command": "python",
-      "args": ["-m", "mudrex_mcp"],
+    "mcp-futures-trading": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mudrex.com/mcp",
+        "--header",
+        "X-Authentication:${API_SECRET}"
+      ],
       "env": {
-        "MUDREX_API_KEY": "YOUR_API_KEY_HERE"
+        "API_SECRET": "<your-api-secret>"
       }
     }
   }
 }
 ```
 
-Generate an API key in Mudrex under **Settings → Developer**.
+Create keys on the [Mudrex API platform](https://docs.trade.mudrex.com/docs/mcp). Tool reference: [docs.trade.mudrex.com/docs/mcp](https://docs.trade.mudrex.com/docs/mcp).
 
 ## Try with Claude (deeplink)
 

@@ -24,6 +24,7 @@ import {
   ChevronDown,
   Sparkles,
   CircleOff,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -33,6 +34,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ApiKeyManagementPanel } from "@/components/api-key-management-panel";
+import { McpToolsSection } from "@/components/mcp-tools-section";
 import { CLAUDE_TRY_DEEPLINK } from "@/lib/links";
 import mcpLogo from "@/assets/mcp-logo.png";
 import mudrexLogo from "@/assets/mudrex-logo.png";
@@ -66,6 +68,7 @@ const SECTIONS = [
   { id: "apikey", label: "API Key Creation", icon: KeyRound },
   { id: "setup", label: "Setting Up", icon: Settings },
   { id: "usecases", label: "Use Cases", icon: Lightbulb },
+  { id: "mcp-tools", label: "MCP Tools", icon: Wrench },
   { id: "faq", label: "FAQ", icon: MessageCircleQuestion },
   { id: "get-started", label: "Get Started", icon: Rocket },
 ] as const;
@@ -179,7 +182,7 @@ const FAQ_ITEMS = [
   {
     question: "Does the MCP server run locally or in the cloud?",
     answer:
-      "Both. The Mudrex MCP server runs locally on your machine — your API key stays in your environment. For production workflows, you can deploy it remotely.",
+      "Claude Desktop connects via mcp-remote to https://mudrex.com/mcp. Your API secret stays in your local claude_desktop_config.json — it is sent only in the X-Authentication header when tools are called.",
   },
   {
     question: "Is MCP free and open-source?",
@@ -190,11 +193,17 @@ const FAQ_ITEMS = [
 
 const CONFIG_JSON = `{
   "mcpServers": {
-    "mudrex": {
-      "command": "python",
-      "args": ["-m", "mudrex_mcp"],
+    "mcp-futures-trading": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mudrex.com/mcp",
+        "--header",
+        "X-Authentication:\${API_SECRET}"
+      ],
       "env": {
-        "MUDREX_API_KEY": "YOUR_API_KEY_HERE"
+        "API_SECRET": "<your-api-secret>"
       }
     }
   }
@@ -549,9 +558,20 @@ function Index() {
           <section id="apikey" className="mt-24 scroll-mt-24">
             <SectionHeader icon={KeyRound} title="API Key Creation" />
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
-              Generate a Mudrex API key to authenticate your MCP server. Head to your account
-              settings under the <span className="font-medium text-foreground">Developer</span>{" "}
-              section to create one.
+              Generate a Mudrex API key and secret to authenticate MCP. Use the API secret as{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground">
+                API_SECRET
+              </code>{" "}
+              in your Claude config. See{" "}
+              <a
+                href="https://docs.trade.mudrex.com/docs/mcp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary hover:text-primary/80"
+              >
+                API key setup
+              </a>{" "}
+              on the Mudrex docs.
             </p>
 
             <div className="mt-6 w-full">
@@ -580,12 +600,23 @@ function Index() {
           <section id="setup" className="mt-24 scroll-mt-24">
             <SectionHeader icon={Settings} title="Setting Up Claude Desktop" />
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
-              Add the Mudrex MCP server to your AI app in about two minutes. Paste the config below
-              into your{" "}
+              Add the Mudrex MCP server to Claude Desktop in a few minutes. In{" "}
+              <strong className="font-medium text-foreground">Settings → Developer → Edit Config</strong>
+              , paste the JSON below into{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground">
                 claude_desktop_config.json
-              </code>{" "}
-              file, replace the API key, and restart.
+              </code>
+              , set <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground">API_SECRET</code> to your Mudrex API secret, and restart. Requires{" "}
+              <a
+                href="https://nodejs.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary hover:text-primary/80"
+              >
+                Node.js
+              </a>{" "}
+              (for <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground">npx</code>
+              ).
             </p>
 
             <div className="mt-6 overflow-hidden rounded-2xl border border-border shadow-sm">
@@ -638,6 +669,8 @@ function Index() {
               ))}
             </div>
           </section>
+
+          <McpToolsSection />
 
           <section id="faq" className="mt-24 scroll-mt-24">
             <SectionHeader icon={MessageCircleQuestion} title="Frequently Asked Questions" />
