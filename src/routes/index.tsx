@@ -469,7 +469,7 @@ function Index() {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 px-5 py-14 md:px-10 md:py-20 lg:max-w-4xl xl:max-w-5xl">
+        <main className="mx-auto min-w-0 max-w-4xl flex-1 px-6 py-14 md:px-12 md:py-20 xl:max-w-5xl">
           <section id="intro" className="scroll-mt-24">
             <div className="max-w-3xl">
               <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-foreground md:text-[56px]">
