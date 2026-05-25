@@ -25,6 +25,8 @@ import {
   Sparkles,
   CircleOff,
   Wrench,
+  Github,
+  BookOpen,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -465,15 +467,21 @@ function Index() {
               href="#"
               className="flex w-full items-center justify-between rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
             >
-              API Documentation
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="flex items-center gap-2">
+                <BookOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                API Documentation
+              </span>
+              <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             </a>
             <a
               href="#"
               className="flex w-full items-center justify-between rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
             >
-              Mudrex Python SDK
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="flex items-center gap-2">
+                <Github className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                Mudrex Python SDK
+              </span>
+              <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             </a>
           </div>
         </aside>
