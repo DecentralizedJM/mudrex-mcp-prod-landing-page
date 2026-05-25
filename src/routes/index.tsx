@@ -27,8 +27,10 @@ import {
   Wrench,
   Github,
   BookOpen,
+  Loader2,
   type LucideIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -37,7 +39,7 @@ import {
 } from "@/components/ui/accordion";
 import { ApiKeyManagementPanel } from "@/components/api-key-management-panel";
 import { McpToolsSection } from "@/components/mcp-tools-section";
-import { CLAUDE_TRY_DEEPLINK } from "@/lib/links";
+import { CLAUDE_TRY_WEB_LINK, openClaudeTryLink } from "@/lib/links";
 import mcpLogo from "@/assets/mcp-logo.png";
 import mudrexLogo from "@/assets/mudrex-logo.png";
 import mudrexIcon from "@/assets/mudrex-icon.png";
@@ -401,6 +403,27 @@ function MudrexNavbar() {
 function Index() {
   const [active, setActive] = useState<string>("intro");
   const [copied, setCopied] = useState(false);
+  const [openingClaude, setOpeningClaude] = useState(false);
+
+  const handleTryWithClaude = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (openingClaude) return;
+
+    setOpeningClaude(true);
+    const { web } = openClaudeTryLink();
+
+    toast("Opening Claude Desktop", {
+      description:
+        "Switch to Claude from your dock or taskbar if it opened behind this window.",
+      action: {
+        label: "Open in browser",
+        onClick: () => window.open(web, "_blank", "noopener,noreferrer"),
+      },
+      duration: 8000,
+    });
+
+    window.setTimeout(() => setOpeningClaude(false), 1800);
+  };
 
   useEffect(() => {
     const sections = SECTIONS.map((s) => document.getElementById(s.id)).filter(
@@ -503,17 +526,28 @@ function Index() {
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a
-                  href={CLAUDE_TRY_DEEPLINK}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] hover:scale-[0.99]"
+                  href={CLAUDE_TRY_WEB_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-busy={openingClaude}
+                  onClick={handleTryWithClaude}
+                  className={
+                    "inline-flex items-center gap-2 rounded-lg bg-[#D97757] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C56848] " +
+                    (openingClaude ? "pointer-events-none opacity-90" : "hover:scale-[0.99]")
+                  }
                 >
-                  <img
-                    src={claudeLogo}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 rounded-[5px] object-contain"
-                  />
-                  Try with Claude
+                  {openingClaude ? (
+                    <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <img
+                      src={claudeLogo}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 rounded-[5px] object-contain"
+                    />
+                  )}
+                  {openingClaude ? "Opening Claude…" : "Try with Claude"}
                 </a>
               </div>
             </div>
